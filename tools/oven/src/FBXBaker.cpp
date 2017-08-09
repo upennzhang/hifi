@@ -90,6 +90,12 @@ void FBXBaker::bakeSourceCopy() {
         return;
     }
 
+    compressMesh();
+    
+    if (hasErrors()) {
+        return;
+    }
+    
     // export the FBX with re-written texture references
     exportScene();
 
@@ -112,7 +118,7 @@ void FBXBaker::setupOutputFolder() {
         _uniqueOutputPath = _baseOutputPath + "/" + _fbxName + "-" + QString::number(++iteration) + "/";
     }
 
-    qCDebug(model_baking) << "Creating FBX output folder" << _uniqueOutputPath;
+    qCDebug(model_baking) << "Creating FBX output folder " << _uniqueOutputPath;
 
     // attempt to make the output folder
     if (!QDir().mkdir(_uniqueOutputPath)) {
@@ -328,6 +334,28 @@ image::TextureUsage::Type textureTypeForMaterialProperty(FbxProperty& property, 
 
     return UNUSED_TEXTURE;
 }
+
+void FBXBaker::compressMesh() {
+
+    int numGeometry = _scene->GetGeometryCount();
+    FbxMesh* mesh;
+    int x = 0;
+    for (int i = 0; i < numGeometry; i++) {
+        FbxGeometry* geometry = _scene->GetGeometry(i);
+
+        if (geometry && FbxCast<FbxMesh>(geometry)) {
+        
+            mesh = FbxCast<FbxMesh>(geometry);
+            qCDebug(model_baking) << "Total Polygons for Mesh " << i <<" = " << mesh->GetPolygonCount();
+        }
+    }
+
+    
+    
+
+
+}
+
 
 void FBXBaker::rewriteAndBakeSceneTextures() {
 
