@@ -389,7 +389,6 @@ void runUnitTests() {
         } else {
             qDebug() << "FAILED!";
         }
-
     }
 }
 
